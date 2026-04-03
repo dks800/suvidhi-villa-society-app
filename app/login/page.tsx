@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, setPersistence, browserLocalPersistence } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -19,6 +19,7 @@ export default function LoginPage() {
     setError("");
     setLoading(true);
     try {
+      await setPersistence(auth, browserLocalPersistence);
       await signInWithEmailAndPassword(auth, email, password);
       toast.success("Sign in successfull!");
       router.push("/admin/dashboard");
@@ -66,11 +67,8 @@ export default function LoginPage() {
           <div className="bg-white lg:bg-white shadow-2xl rounded-2xl w-full max-w-md p-6 sm:p-8 border-t-4 border-[var(--color-accent)] backdrop-blur-md lg:backdrop-blur-none bg-opacity-90 lg:bg-opacity-100">
             <div className="text-center mb-6">
               <h2 className="text-xl sm:text-2xl font-bold text-[var(--color-primary)]">
-                Admin Login
+                Login
               </h2>
-              <p className="text-sm text-gray-500 lg:text-gray-500">
-                President & Treasurer Access
-              </p>
             </div>
 
             {error && (

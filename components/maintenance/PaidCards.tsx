@@ -19,7 +19,7 @@ function PaidCards({
   };
 
   return (
-    <div className="space-y-3  flex flex-row gap-2 items-start">
+    <div className="space-y-3  flex flex-row gap-2 items-start flex-wrap justify-start">
       {data.map((m: RecordType) => {
         const totalAmount =
           Number(m.amount || 0) +
