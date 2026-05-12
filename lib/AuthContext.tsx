@@ -33,47 +33,39 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
-  const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-    try {
-      if (firebaseUser) {
-        setUser(firebaseUser);
-      } else {
-        setUser(null);
-      }
-    } catch (error: any) {
-      console.error("Auth Error:", error);
-
-      if (error.code === "permission-denied") {
-        router.push("/error"); // navigate to error page
-      }
-    } finally {
-      setLoading(false);
-    }
-  });
-
-  return () => unsubscribe();
-}, []);
-
-  useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
-        setUser(firebaseUser);
+      try {
+        if (firebaseUser) {
+          setUser(firebaseUser);
 
-        const userDoc = await getDoc(doc(db, "users", firebaseUser.uid));
-
-        if (userDoc.exists()) {
-          setRole(userDoc.data().role);
+          const userDoc = await getDoc(doc(db, "users", firebaseUser.uid));
+          if (userDoc.exists()) {
+            setRole(userDoc.data().role as Role);
+          } else {
+            setRole(null);
+          }
+        } else {
+          setUser(null);
+          setRole(null);
         }
-      } else {
+      } catch (error) {
+        console.error("Auth Error:", error);
         setUser(null);
         setRole(null);
-      }
 
-      setLoading(false);
+        if (typeof error === "object" && error !== null && "code" in error) {
+          const err = error as { code?: string };
+          if (err.code === "permission-denied") {
+            router.push("/error");
+          }
+        }
+      } finally {
+        setLoading(false);
+      }
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [router]);
 
   return (
     <AuthContext.Provider value={{ user, role, loading, logout }}>

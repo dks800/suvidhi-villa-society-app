@@ -27,7 +27,7 @@ export default function MaintenancePage() {
   } = useMaintenanceData(selectedMonth);
 
   const paidMaintenanceList = sortMembers(currentMonthMaintenance as any);
-  const unpaidMaintenanceList = sortMembers(unpaidMembers as any)
+  const unpaidMaintenanceList = sortMembers(unpaidMembers as any);
 
   if (loading)
     return (
@@ -72,14 +72,15 @@ export default function MaintenancePage() {
         monthlyAmount={600}
       />
 
-      <PaidAccordion data={paidMaintenanceList} />
-
       <UnpaidAccordion
         data={unpaidMaintenanceList}
         memberList={memberList}
         selectedMonth={selectedMonth}
         societyDetails={societyDetails}
       />
+
+      <PaidAccordion data={paidMaintenanceList} />
+
       {showAddModal && (
         <AddMaintenanceModal
           type="add"
